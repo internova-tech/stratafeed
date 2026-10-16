@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import type { FormEvent, ReactNode } from "react";
 import {
   Activity, Bell, Bookmark, BriefcaseBusiness, ChartNoAxesCombined, ChevronDown,
@@ -115,7 +116,7 @@ export default function DashboardPage() {
           <div className="hidden h-8 flex-1 items-center border border-terminal-border bg-terminal-panel px-3 md:flex">
             <Command size={13} className="mr-2 text-terminal-amber"/><form onSubmit={submitCommand} className="flex w-full items-center"><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search ticker, company, market, or command..." className="w-full bg-transparent text-[10px] text-white outline-none placeholder:text-gray-600"/><span className="text-[9px] text-gray-600">ENTER</span></form>
           </div>
-          <div className="ml-auto flex items-center gap-3 text-terminal-muted"><span className="hidden text-[9px] sm:inline">DATA MODE: <b className="text-terminal-amber">DEMO</b></span><button aria-label="Open command search" onClick={()=>setCommandOpen(true)} className="p-1 hover:text-terminal-amber"><Search size={16}/></button><button aria-label="Notifications" className="relative p-1 hover:text-terminal-amber"><Bell size={16}/><i className="absolute right-0 top-0 h-1.5 w-1.5 rounded-full bg-terminal-amber"/></button><button aria-label="Settings" className="p-1 hover:text-white"><Settings2 size={16}/></button><div className="flex h-7 w-7 items-center justify-center border border-terminal-border bg-terminal-surface text-terminal-amber">ST</div></div>
+          <div className="ml-auto flex items-center gap-3 text-terminal-muted"><span className="hidden text-[9px] sm:inline">DATA MODE: <b className="text-terminal-amber">DEMO</b></span><button aria-label="Open command search" onClick={()=>setCommandOpen(true)} className="p-1 hover:text-terminal-amber"><Search size={16}/></button><button aria-label="Notifications" className="relative p-1 hover:text-terminal-amber"><Bell size={16}/><i className="absolute right-0 top-0 h-1.5 w-1.5 rounded-full bg-terminal-amber"/></button><button aria-label="Settings" className="p-1 hover:text-white"><Settings2 size={16}/></button><Link href="/login" aria-label="Sign in or manage account" className="flex h-7 items-center justify-center border border-terminal-border bg-terminal-surface px-2 text-[9px] text-terminal-amber hover:border-terminal-amber">SIGN IN</Link></div>
         </div>
         <div className="flex h-7 items-center gap-5 overflow-hidden border-t border-terminal-border bg-[#08090c] px-3 lg:px-5">
           <span className="shrink-0 text-[9px] font-bold tracking-widest text-terminal-amber">MARKET PULSE</span>
