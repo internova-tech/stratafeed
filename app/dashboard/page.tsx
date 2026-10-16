@@ -4,9 +4,9 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { FormEvent, ReactNode } from "react";
 import {
-  Activity, Bell, Bookmark, BriefcaseBusiness, ChartNoAxesCombined, ChevronDown,
+  Activity, Bell, Bookmark, BriefcaseBusiness, ChevronDown,
   Command, Globe2, LayoutDashboard, Newspaper, Search, Settings2, ShieldAlert,
-  SlidersHorizontal, Sparkles, Star, TrendingDown, TrendingUp, Wallet, X
+  SlidersHorizontal, Sparkles, Star, X
 } from "lucide-react";
 
 type Asset = { ticker: string; name: string; price: string; change: number; volume: string; sector: string };
