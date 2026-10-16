@@ -5,12 +5,14 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 
 const tickerSchema = z.string().trim().toUpperCase().regex(/^[A-Z0-9][A-Z0-9._-]{0,19}$/);
-const createSchema = z.object({
+const watchlistFields = {
   name: z.string().trim().min(1).max(80),
   tickers: z.array(tickerSchema).max(100).default([]),
-}).strict().refine((data) => new Set(data.tickers).size === data.tickers.length, {
-  message: "Tickers must be unique.",
-  path: ["tickers"],
+};
+const createSchema = z.object(watchlistFields).strict().superRefine((data, ctx) => {
+  if (new Set(data.tickers).size !== data.tickers.length) {
+    ctx.addIssue({ code: "custom", message: "Tickers must be unique.", path: ["tickers"] });
+  }
 });
 
 export async function listWatchlists() {
@@ -48,7 +50,11 @@ export async function createWatchlist(input: unknown) {
 }
 
 export async function updateWatchlist(input: unknown) {
-  const schema = createSchema.extend({ id: z.string().uuid() }).strict();
+  const schema = z.object({ ...watchlistFields, id: z.string().uuid() }).strict().superRefine((data, ctx) => {
+    if (new Set(data.tickers).size !== data.tickers.length) {
+      ctx.addIssue({ code: "custom", message: "Tickers must be unique.", path: ["tickers"] });
+    }
+  });
   const parsed = schema.safeParse(input);
   if (!parsed.success) return { ok: false as const, error: "Invalid watchlist details." };
 
