@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -23,18 +24,29 @@ const responseSchema = z.object({
 }).strict();
 
 export async function POST(request: Request) {
+  const supabase = await createClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) {
+    return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+  }
+
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json({ error: "AI analysis is not configured on this deployment." }, { status: 503 });
   }
 
-  const contentLength = Number(request.headers.get("content-length") ?? 0);
-  if (contentLength > 100_000) {
+  let bodyText: string;
+  try {
+    bodyText = await request.text();
+  } catch {
+    return NextResponse.json({ error: "Could not read request body." }, { status: 400 });
+  }
+  if (Buffer.byteLength(bodyText, "utf8") > 100_000) {
     return NextResponse.json({ error: "Request body is too large." }, { status: 413 });
   }
 
   let raw: unknown;
   try {
-    raw = await request.json();
+    raw = JSON.parse(bodyText);
   } catch {
     return NextResponse.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
