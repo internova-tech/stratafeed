@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { FormEvent, ReactNode } from "react";
 import {
   Activity, Bell, Bookmark, BriefcaseBusiness, ChartNoAxesCombined, ChevronDown,
   Command, Globe2, LayoutDashboard, Newspaper, Search, Settings2, ShieldAlert,
@@ -36,7 +37,7 @@ const navItems = [
   { label: "Risk Monitor", icon: ShieldAlert },
 ];
 
-function Panel({ title, code, children, className = "" }: { title: string; code?: string; children: React.ReactNode; className?: string }) {
+function Panel({ title, code, children, className = "" }: { title: string; code?: string; children: ReactNode; className?: string }) {
   return (
     <section className={`min-w-0 border border-terminal-border bg-terminal-panel ${className}`}>
       <div className="flex h-9 items-center justify-between border-b border-terminal-border px-3">
@@ -92,7 +93,7 @@ export default function DashboardPage() {
   const filteredAssets = useMemo(() => assets.filter(a => (a.ticker + " " + a.name + " " + a.sector).toLowerCase().includes(query.toLowerCase()) && (!watchOnly || saved.includes(a.ticker))), [query, watchOnly, saved]);
 
   const toggleSaved = (ticker: string) => setSaved(old => old.includes(ticker) ? old.filter(t => t !== ticker) : [...old, ticker]);
-  const submitCommand = (event: React.FormEvent<HTMLFormElement>) => {
+  const submitCommand = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const value = query.trim();
     if (value) setActiveNav("Markets");
