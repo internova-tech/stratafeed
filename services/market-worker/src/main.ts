@@ -7,7 +7,7 @@ const port = Number(process.env.MARKET_WS_PORT ?? 8787);
 const host = process.env.MARKET_WS_HOST ?? "127.0.0.1";
 const token = process.env.MARKET_WS_TOKEN;
 const allowedOrigin = process.env.MARKET_WS_ALLOWED_ORIGIN;
-const mode = (process.env.MARKET_DATA_PROVIDER ?? "mock") as RequestedMode;
+const mode = process.env.MARKET_DATA_PROVIDER ?? "mock";
 
 if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error("MARKET_WS_PORT must be a valid port");
 if (mode !== "mock") throw new Error("Phase 1 worker only supports MARKET_DATA_PROVIDER=mock. Live providers are not configured.");
@@ -46,7 +46,8 @@ wss.on("connection", (socket, request) => {
         socket.send(JSON.stringify({ type: "error", error: "symbols must be an array of 1-1000 strings" })); return;
       }
       const requestedPlan: Plan = value.plan === "pro" || value.plan === "enterprise" ? value.plan : "free";
-      const requestedMode: RequestedMode = value.mode === "delayed" || value.mode === "realtime" ? value.mode : "mock";
+      const requestedMode: RequestedMode = value.mode === "mock" ? "mock" : (value.mode === "delayed" || value.mode === "realtime" ? value.mode : "mock");
+      if (requestedMode !== "mock") { socket.send(JSON.stringify({ type: "error", error: "This worker only supplies mock data; delayed and realtime feeds are not configured." })); return; }
       const symbols = value.symbols as string[];
       try {
         assertSubscriptionAllowed(requestedPlan, symbols, requestedMode);
