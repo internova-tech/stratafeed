@@ -19,7 +19,9 @@ export async function GET(request: Request) {
     return NextResponse.json({
       quote,
       provider: "Twelve Data",
-      freshness: "provider quote; real-time or delayed status depends on exchange entitlement",
+      dataMode: quote.is_simulated ? "mock" : "provider",
+      isSimulated: quote.is_simulated === true,
+      freshness: quote.is_simulated ? "SIMULATED TEST DATA — NOT A REAL MARKET QUOTE" : "provider quote; real-time or delayed status depends on exchange entitlement",
       receivedAt: new Date().toISOString(),
     }, { headers: { "Cache-Control": "no-store, max-age=0" } });
   } catch (error) {
