@@ -52,3 +52,10 @@ Until a licensed market-data provider is configured, displayed sample figures ar
 3. Authenticated data access, watchlists, and Realtime
 4. AI research endpoint with schema validation and rate limiting
 5. Provider integrations, auditability, testing, and production hardening
+
+
+## Phase 1: market-data simulator and gateway
+
+The default market provider is `mock`. Quotes served in this mode are simulated test fixtures and are explicitly marked; they are not live market prices. The standalone WebSocket worker is intended for local testing and requires a persistent WebSocket-capable host when deployed. See [Phase 1 setup](docs/phase-1-setup.md) and [architecture](docs/architecture.md).
+
+Run `npm run market:worker` to start the mock gateway and `npm test` for the Phase 1 unit tests. Live provider access is not enabled by this phase.
