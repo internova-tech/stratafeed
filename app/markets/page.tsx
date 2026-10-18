@@ -5,6 +5,7 @@ import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Activity, ArrowLeft, ArrowUpRight, RefreshCw, Search, Star } from "lucide-react";
 
 type Quote = {
+  is_simulated?: boolean;
   symbol: string; name?: string; exchange?: string; currency?: string; datetime?: string;
   close?: string; change?: string; percent_change?: string; volume?: string; is_market_open?: boolean;
 };
@@ -89,6 +90,7 @@ export default function MarketsPage() {
           {searchError && <p role="status" className="mt-3 text-[10px] text-rose-300">{searchError}</p>}
           {results.length > 0 && <div className="mt-3 divide-y divide-[#252832] border border-[#252832]">{results.map((result) => <div key={`${result.symbol}-${result.exchange}`} className="flex flex-wrap items-center justify-between gap-3 p-3"><div><div className="font-bold text-white">{result.symbol} <span className="ml-2 font-normal text-gray-400">{result.instrument_name}</span></div><div className="mt-1 text-[9px] text-gray-500">{[result.exchange, result.country, result.currency, result.instrument_type].filter(Boolean).join(" · ")}</div></div><button onClick={() => addSymbol(result.symbol)} className="flex items-center gap-1 text-amber-300 hover:text-amber-200"><Star size={12}/> Watch</button></div>)}</div>}
         </div>
+        {Object.values(quotes).some((quote) => quote.is_simulated) && <div role="status" className="mt-4 border border-amber-300/40 bg-amber-300/10 p-3 text-[10px] font-bold text-amber-100">SIMULATED DATA — NOT LIVE EXCHANGE PRICES. Use this mode for interface and integration testing only.</div>}
         {error && <div role="status" className="mt-4 border border-amber-300/30 bg-amber-300/5 p-3 text-[10px] text-amber-100"><strong>Feed status:</strong> {error}<p className="mt-2 text-gray-400">Configure TWELVE_DATA_API_KEY on the server. Real-time or delayed delivery depends on your provider plan and each exchange&apos;s entitlement. No demo prices are substituted.</p></div>}
         <div className="mt-5 overflow-x-auto border border-[#252832] bg-[#0e1015]">
           <div className="flex items-center justify-between border-b border-[#252832] p-3"><div className="font-bold tracking-wider">WATCHLIST QUOTES</div><div className="text-[9px] text-gray-500">{lastUpdated ? `Checked ${lastUpdated}` : "Waiting for provider"}</div></div>
